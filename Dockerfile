@@ -1,14 +1,17 @@
 FROM debian:9.6
 
-RUN apt-get update
-RUN apt-get --yes install apache2
-RUN apt-get --yes install python
-RUN apt-get --yes install ca-certificates
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+        apache2 \
+        python \
+        ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/pear
 
 RUN a2dissite 000-default
 
-RUN a2enmod cgid
-RUN a2enmod rewrite
+RUN a2enmod cgid rewrite
 RUN echo 'ServerName feedvalidator.org' >>/etc/apache2/apache2.conf
 
 WORKDIR /feedvalidator
